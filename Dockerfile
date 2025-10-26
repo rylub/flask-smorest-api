@@ -7,19 +7,17 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Copy rest of the project
+# Copy the rest of the project
 COPY . .
 
 # Expose Flask port
 EXPOSE 5000
 
-# Set Flask environment variables
-ENV FLASK_APP=app.app:create_app
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV FLASK_ENV=development
-ENV PYTHONPATH=/app
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV FLASK_ENV=production
 
-# Run the Flask app
-CMD ["flask", "run", "--host=0.0.0.0", "--debug"]
+# Use gunicorn to run your Flask factory app
+CMD ["gunicorn", "app.app:create_app()", "--bind", "0.0.0.0:80"]
