@@ -135,4 +135,4 @@ You are free to use, modify, and distribute it as long as proper attribution is 
 ---
 
 **Author:** Ryan Lubell  
-[LinkedIn Profile](https://www.linkedin.com/in/ryanlubell)
+[LinkedIn Profile](https://www.linkedin.com/in/ryan-lubell/)
