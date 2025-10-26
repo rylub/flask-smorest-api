@@ -1,0 +1,42 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Flask + SQLite
+instance/
+*.db
+*.sqlite3
+
+# Migrations (can be excluded if you track migrations)
+migrations/versions/
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.log
+*.tmp
+.env
+docker-compose.override.yml
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build / dist
+build/
+dist/
+*.egg-info/
