@@ -5,4 +5,4 @@
 To run the Flask-Smorest API locally using Docker, use the following command:
 
 ```bash
-docker run -dp 5000:80 -w /app -v "$(pwd):/app" flask-smorest-api
+docker run -dp 5000:80 -w /app -v "%cd%:/app" flask-smorest-api
