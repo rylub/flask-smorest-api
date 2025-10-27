@@ -4,13 +4,16 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "5000:80"
     volumes:
       - .:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db/myapp
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "echo '⏳ Waiting for DB...' && sleep 5 && gunicorn --bind 0.0.0.0:80 'app.app:create_app()'"
 
   db:
     image: postgres:17
@@ -19,7 +22,12 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=myapp
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      retries: 5
+      start_period: 5s
 
 volumes:
   postgres_data:
