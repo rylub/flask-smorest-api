@@ -11,7 +11,6 @@ from app.resources.tag import blp as TagBlueprint
 from app.resources.user import blp as UserBlueprint
 from app.blocklist import BLOCKLIST
 
-# ✅ Global migrate instance
 migrate = Migrate()
 
 def create_app(db_url=None):
@@ -23,8 +22,8 @@ def create_app(db_url=None):
     app.config["API_TITLE"] = "Stores REST API"
     app.config["API_VERSION"] = "v1"
     app.config["OPENAPI_VERSION"] = "3.0.3"
-    app.config["OPENAPI_URL_PREFIX"] = None
-    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui/"
+    app.config["OPENAPI_URL_PREFIX"] = "/"
+    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/docs"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL", "sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -89,6 +88,6 @@ def create_app(db_url=None):
     # ---------------------- ROOT REDIRECT ---------------------- #
     @app.route("/")
     def index():
-        return redirect("/swagger-ui/")
+        return redirect("/docs")
 
     return app
