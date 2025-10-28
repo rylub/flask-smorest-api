@@ -1,4 +1,5 @@
 import os
+from flask import current_app
 from sqlalchemy import or_
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
@@ -9,21 +10,10 @@ from app.blocklist import BLOCKLIST
 from app.db import db
 from app.models import UserModel
 from app.schemas import UserSchema, UserRegisterSchema
+from app.tasks import send_user_registration_email
 
 blp = Blueprint("Users", "users", description="Operations on users")
 
-
-def send_simple_message(to, subject, body):
-    return requests.post(
-        f"https://api.mailgun.net/v3/{os.getenv('MAILGUN_DOMAIN')}/messages",
-        auth=("api", os.getenv("MAILGUN_API_KEY")),
-        data={
-            "from": f"Stores API <{os.getenv('MAILGUN_FROM_EMAIL')}>",
-            "to": [to],
-            "subject": subject,
-            "text": body
-        }
-    )
 
 @blp.route("/register")
 class UserRegister(MethodView):
@@ -44,10 +34,8 @@ class UserRegister(MethodView):
         )
         db.session.add(user)
         db.session.commit()
-        response = send_simple_message(to=user.email, subject= "Successfully signed up.",
-                            body=f"Hello {user.username}! You have successfully signed up to the Stores Rest API.")
-        if response.status_code != 200:
-            print("Mailgun error:", response.text)
+
+        current_app.queue.enqueue(send_user_registration_email(user.email, user.username))
 
         return {"message": "User created successfully."}, 201
 
@@ -96,3 +84,5 @@ class User(MethodView):
         db.session.delete(user)
         db.session.commit()
         return {"message": "User deleted"}, 200
+
+    # Size: 17.52 " L x 13.58" W x 5.9 " H

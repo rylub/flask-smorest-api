@@ -10,6 +10,9 @@ from app.resources.store import blp as StoreBlueprint
 from app.resources.tag import blp as TagBlueprint
 from app.resources.user import blp as UserBlueprint
 from app.blocklist import BLOCKLIST
+import redis
+from rq import Queue
+
 
 migrate = Migrate()
 
@@ -18,6 +21,8 @@ def create_app(db_url=None):
     app = Flask(__name__)
 
     # ---------------------- CONFIG ---------------------- #
+    connection = redis.from_url(os.getenv("REDIS_URL"))
+    app.queue = Queue("emails", connection=connection)
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Stores REST API"
     app.config["API_VERSION"] = "v1"
